@@ -5,7 +5,7 @@ A simple photo organizer that moves photos around
 
 Modify the ``ProjectRootPath`` property inside ``Settings.xml`` file to point to the root directory of your photo collection.
 
-To move photos from their original location to the "360 Edits/Originals" folder:
+To copy photos from their original location to the "360 Edits/Originals" folder:
 ```powershell
 .\Move-PhotosToEdit.ps1
 ```

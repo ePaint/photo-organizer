@@ -1,7 +1,12 @@
 [XML]$Settings = Get-Content -Path "Settings.xml"
-$ProjectRootPath = $Settings.root.ProjectRootPath
+$VirtualProjectRootPath = $Settings.root.ProjectRootPath
 
-$360EditsFolderPath = Join-Path -Path $ProjectRootPath -ChildPath "360 Edits"
+$PhotosProjectRootPath = "$VirtualProjectRootPath Photos"
+if (-not (Test-Path -Path $PhotosProjectRootPath)) {
+  New-Item -Path $PhotosProjectRootPath -ItemType Directory | Out-Null
+}
+
+$360EditsFolderPath = Join-Path -Path $PhotosProjectRootPath -ChildPath "360 Edits"
 if (-not (Test-Path -Path $360EditsFolderPath)) {
   New-Item -Path $360EditsFolderPath -ItemType Directory | Out-Null
 }
@@ -16,7 +21,7 @@ if (-not (Test-Path -Path $EditsFolderPath)) {
   New-Item -Path $EditsFolderPath -ItemType Directory | Out-Null
 }
 
-$Items = Get-ChildItem -Path $ProjectRootFolderPath -Recurse -Filter "h1.jpg"
+$Items = Get-ChildItem -Path $VirtualProjectRootPath -Recurse -Filter "h1.jpg"
 $Items | ForEach-Object {
   $Item = $_
   $ID = Get-Item -Path $Item.DirectoryName

@@ -1,7 +1,12 @@
 [XML]$Settings = Get-Content -Path "Settings.xml"
-$ProjectRootPath = $Settings.root.ProjectRootPath
+$VirtualProjectRootPath = $Settings.root.ProjectRootPath
 
-$360EditsFolderPath = Join-Path -Path $ProjectRootPath -ChildPath "360 Edits"
+$PhotosProjectRootPath = "$VirtualProjectRootPath Photos"
+if (-not (Test-Path -Path $PhotosProjectRootPath)) {
+  New-Item -Path $PhotosProjectRootPath -ItemType Directory | Out-Null
+}
+
+$360EditsFolderPath = Join-Path -Path $PhotosProjectRootPath -ChildPath "360 Edits"
 if (-not (Test-Path -Path $360EditsFolderPath)) {
   New-Item -Path $360EditsFolderPath -ItemType Directory | Out-Null
 }
@@ -19,7 +24,7 @@ if (-not (Test-Path -Path $EditsFolderPath)) {
 Function Get-FolderFromName {
   [CmdletBinding()]
   param (
-      $Name
+    $Name
   )
   $Segments = $Name -split '-'
   $FloorName = $Segments[0] -replace "_", " "
@@ -29,12 +34,12 @@ Function Get-FolderFromName {
   return $IDPath
 }
 
-$Items = Get-ChildItem -Path $ProjectRootFolderPath -Recurse -Filter "*-h1-edit.jpg"
+$Items = Get-ChildItem -Path $PhotosProjectRootPath -Recurse -Filter "*-h1-edit.jpg"
 $Items | ForEach-Object {
   $Segments = $_.Name -split '-'
   $FloorName = $Segments[0] -replace "_", " "
   $IDName = $Segments[1] -replace "_", " "
-  $FloorPath = Join-Path -Path $ProjectRootPath -ChildPath $FloorName
+  $FloorPath = Join-Path -Path $VirtualProjectRootPath -ChildPath $FloorName
   $IDPath = Join-Path -Path $FloorPath -ChildPath $IDName
   if (-not (Test-Path -Path $IDPath)) {
     Write-Host "Folder $IDPath does not exist, skipping item $($_.Name)" -ForegroundColor Yellow
